@@ -44,4 +44,10 @@ public interface FreelancerProfileRepository extends JpaRepository<FreelancerPro
     
     @Query("SELECT fp FROM FreelancerProfile fp WHERE fp.user.isActive = true ORDER BY fp.totalEarnings DESC")
     Page<FreelancerProfile> findTopEarners(Pageable pageable);
-} 
+    
+    // Métodos adicionales para búsquedas
+    Page<FreelancerProfile> findByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCaseOrTitleContainingIgnoreCase(
+        String firstName, String lastName, String title, Pageable pageable);
+    
+    Page<FreelancerProfile> findByOrderByRatingDescTotalReviewsDesc(Pageable pageable);
+}

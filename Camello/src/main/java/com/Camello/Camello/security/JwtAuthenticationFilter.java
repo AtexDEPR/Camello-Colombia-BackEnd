@@ -22,6 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
     
     @Override
     protected void doFilterInternal(
@@ -40,6 +41,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         
         jwt = authHeader.substring(7);
+        
+        // Verificar si el token está en la lista negra
+        if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         userEmail = jwtService.extractUsername(jwt);
         
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {

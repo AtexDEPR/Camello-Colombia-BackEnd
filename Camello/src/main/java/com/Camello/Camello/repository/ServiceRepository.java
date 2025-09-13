@@ -49,4 +49,30 @@ public interface ServiceRepository extends JpaRepository<Service, UUID> {
     
     @Query("SELECT s FROM Service s WHERE s.title ILIKE %:searchTerm% OR s.description ILIKE %:searchTerm% AND s.isActive = true")
     Page<Service> searchByTitleOrDescription(@Param("searchTerm") String searchTerm, Pageable pageable);
-} 
+    
+    // Métodos adicionales para el nuevo ServiceService
+    Page<Service> findByIsActiveTrueOrderByCreatedAtDesc(Pageable pageable);
+    
+    @Query("SELECT s FROM Service s WHERE s.freelancer = :freelancer ORDER BY s.createdAt DESC")
+    Page<Service> findByFreelancerOrderByCreatedAtDesc(@Param("freelancer") com.Camello.Camello.entity.FreelancerProfile freelancer, Pageable pageable);
+    
+    @Query("SELECT s FROM Service s WHERE s.category = :category AND s.isActive = true ORDER BY s.createdAt DESC")
+    Page<Service> findByCategoryAndIsActiveTrueOrderByCreatedAtDesc(@Param("category") com.Camello.Camello.entity.Category category, Pageable pageable);
+    
+    Page<Service> findByTitleContainingIgnoreCaseAndIsActiveTrueOrderByCreatedAtDesc(String title, Pageable pageable);
+    
+    @Query("SELECT s FROM Service s WHERE s.category = :category AND LOWER(s.title) LIKE LOWER(CONCAT('%', :title, '%')) AND s.isActive = true ORDER BY s.createdAt DESC")
+    Page<Service> findByCategoryAndTitleContainingIgnoreCaseAndIsActiveTrueOrderByCreatedAtDesc(
+        @Param("category") com.Camello.Camello.entity.Category category, @Param("title") String title, Pageable pageable);
+    
+    @Query("SELECT s FROM Service s WHERE LOWER(s.title) LIKE LOWER(CONCAT('%', :title, '%')) AND s.price BETWEEN :minPrice AND :maxPrice AND s.isActive = true ORDER BY s.createdAt DESC")
+    Page<Service> findByTitleContainingIgnoreCaseAndPriceBetweenAndIsActiveTrueOrderByCreatedAtDesc(
+        @Param("title") String title, @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
+    
+    @Query("SELECT s FROM Service s WHERE s.category = :category AND LOWER(s.title) LIKE LOWER(CONCAT('%', :title, '%')) AND s.price BETWEEN :minPrice AND :maxPrice AND s.isActive = true ORDER BY s.createdAt DESC")
+    Page<Service> findByCategoryAndTitleContainingIgnoreCaseAndPriceBetweenAndIsActiveTrueOrderByCreatedAtDesc(
+        @Param("category") com.Camello.Camello.entity.Category category, @Param("title") String title, 
+        @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
+    
+    Page<Service> findByIsFeaturedTrueAndIsActiveTrueOrderByCreatedAtDesc(Pageable pageable);
+}

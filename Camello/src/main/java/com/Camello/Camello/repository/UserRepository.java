@@ -31,4 +31,23 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.isActive = true AND u.deletedAt IS NULL")
     Optional<User> findActiveByEmail(@Param("email") String email);
-} 
+    
+    // Métodos adicionales para administración
+    Long countByRole(User.UserRole role);
+    
+    Long countByIsActiveTrue();
+    
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseAndRoleAndIsActive(String email, User.UserRole role, Boolean isActive, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseAndRole(String email, User.UserRole role, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseAndIsActive(String email, Boolean isActive, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByRoleAndIsActive(User.UserRole role, Boolean isActive, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCase(String email, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByRole(User.UserRole role, org.springframework.data.domain.Pageable pageable);
+    
+    org.springframework.data.domain.Page<User> findByIsActive(Boolean isActive, org.springframework.data.domain.Pageable pageable);
+}

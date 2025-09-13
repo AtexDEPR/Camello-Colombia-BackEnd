@@ -19,6 +19,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenBlacklistService tokenBlacklistService;
     
     public AuthResponse register(RegisterRequest request) {
         // Verificar si el email ya existe
@@ -72,5 +73,36 @@ public class AuthenticationService {
         } catch (Exception e) {
             return new AuthResponse("Credenciales inválidas", false);
         }
+    }
+    
+    public AuthResponse refreshToken(String refreshToken) {
+        try {
+            if (tokenBlacklistService.isTokenBlacklisted(refreshToken)) {
+                throw new RuntimeException("Token invalidado");
+            }
+            
+            String userEmail = jwtService.extractUsername(refreshToken);
+            User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                String newJwtToken = jwtService.generateToken(user);
+                String newRefreshToken = jwtService.generateRefreshToken(user);
+                
+                // Invalidar el refresh token anterior
+                tokenBlacklistService.blacklistToken(refreshToken);
+                
+                return new AuthResponse(newJwtToken, newRefreshToken, user);
+            } else {
+                throw new RuntimeException("Refresh token inválido");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error al refrescar token: " + e.getMessage());
+        }
+    }
+    
+    public void logout(String token) {
+        // Agregar token a la lista negra
+        tokenBlacklistService.blacklistToken(token);
     }
 } 

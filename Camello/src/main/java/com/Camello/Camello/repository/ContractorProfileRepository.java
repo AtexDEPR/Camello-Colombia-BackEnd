@@ -31,4 +31,8 @@ public interface ContractorProfileRepository extends JpaRepository<ContractorPro
     
     @Query("SELECT cp FROM ContractorProfile cp WHERE cp.companySize = :companySize AND cp.user.isActive = true")
     Page<ContractorProfile> findByCompanySize(@Param("companySize") ContractorProfile.CompanySize companySize, Pageable pageable);
-} 
+    
+    // Métodos adicionales para búsquedas
+    Page<ContractorProfile> findByCompanyNameContainingIgnoreCaseOrContactNameContainingIgnoreCase(
+        String companyName, String contactName, Pageable pageable);
+}

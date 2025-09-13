@@ -1,4 +1,4 @@
-package com.camello.config;
+package com.Camello.Camello.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

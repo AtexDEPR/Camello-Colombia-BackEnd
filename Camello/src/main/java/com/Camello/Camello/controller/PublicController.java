@@ -2,6 +2,7 @@ package com.Camello.Camello.controller;
 
 import com.Camello.Camello.entity.Category;
 import com.Camello.Camello.entity.Service;
+import com.Camello.Camello.dto.ServiceDto;
 import com.Camello.Camello.service.CategoryService;
 import com.Camello.Camello.service.ServiceService;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,7 @@ public class PublicController {
     }
     
     @GetMapping("/services")
-    public ResponseEntity<Page<Service>> getServices(
+    public ResponseEntity<Page<ServiceDto>> getServices(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) UUID categoryId,
@@ -48,29 +49,24 @@ public class PublicController {
         Pageable pageable = PageRequest.of(page, size);
         
         if (searchTerm != null && !searchTerm.trim().isEmpty()) {
-            return ResponseEntity.ok(serviceService.searchServices(searchTerm, pageable));
+            return ResponseEntity.ok(serviceService.searchServices(searchTerm, categoryId, minPrice, maxPrice, pageable));
         }
         
         if (categoryId != null) {
             return ResponseEntity.ok(serviceService.getServicesByCategory(categoryId, pageable));
         }
         
-        if (minPrice != null && maxPrice != null) {
-            return ResponseEntity.ok(serviceService.getServicesByPriceRange(minPrice, maxPrice, pageable));
-        }
-        
-        return ResponseEntity.ok(serviceService.getAllActiveServices(pageable));
+        return ResponseEntity.ok(serviceService.getAllServices(pageable));
     }
     
     @GetMapping("/services/{id}")
-    public ResponseEntity<Service> getServiceById(@PathVariable UUID id) {
-        return serviceService.getServiceById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<ServiceDto> getServiceById(@PathVariable UUID id) {
+        ServiceDto service = serviceService.getServiceById(id);
+        return ResponseEntity.ok(service);
     }
     
     @GetMapping("/services/featured")
-    public ResponseEntity<Page<Service>> getFeaturedServices(
+    public ResponseEntity<Page<ServiceDto>> getFeaturedServices(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         

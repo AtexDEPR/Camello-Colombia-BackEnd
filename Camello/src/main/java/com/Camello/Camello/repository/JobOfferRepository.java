@@ -45,4 +45,21 @@ public interface JobOfferRepository extends JpaRepository<JobOffer, UUID> {
     
     @Query("SELECT jo FROM JobOffer jo WHERE :skill MEMBER OF jo.requiredSkills AND jo.isActive = true")
     Page<JobOffer> findByRequiredSkill(@Param("skill") String skill, Pageable pageable);
-} 
+    
+    // Métodos adicionales para el nuevo JobOfferService
+    Page<JobOffer> findByIsActiveTrueOrderByCreatedAtDesc(Pageable pageable);
+    
+    @Query("SELECT jo FROM JobOffer jo WHERE jo.contractor = :contractor ORDER BY jo.createdAt DESC")
+    Page<JobOffer> findByContractorOrderByCreatedAtDesc(@Param("contractor") com.Camello.Camello.entity.ContractorProfile contractor, Pageable pageable);
+    
+    @Query("SELECT jo FROM JobOffer jo WHERE jo.category = :category AND jo.isActive = true ORDER BY jo.createdAt DESC")
+    Page<JobOffer> findByCategoryAndIsActiveTrueOrderByCreatedAtDesc(@Param("category") com.Camello.Camello.entity.Category category, Pageable pageable);
+    
+    Page<JobOffer> findByTitleContainingIgnoreCaseAndIsActiveTrueOrderByCreatedAtDesc(String title, Pageable pageable);
+    
+    @Query("SELECT jo FROM JobOffer jo WHERE jo.category = :category AND LOWER(jo.title) LIKE LOWER(CONCAT('%', :title, '%')) AND jo.isActive = true ORDER BY jo.createdAt DESC")
+    Page<JobOffer> findByCategoryAndTitleContainingIgnoreCaseAndIsActiveTrueOrderByCreatedAtDesc(
+        @Param("category") com.Camello.Camello.entity.Category category, @Param("title") String title, Pageable pageable);
+    
+    Page<JobOffer> findByIsFeaturedTrueAndIsActiveTrueOrderByCreatedAtDesc(Pageable pageable);
+}

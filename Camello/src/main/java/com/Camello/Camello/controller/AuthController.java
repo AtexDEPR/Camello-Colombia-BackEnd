@@ -31,13 +31,23 @@ public class AuthController {
     
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refreshToken(@RequestHeader("Authorization") String token) {
-        // TODO: Implementar refresh token
-        return ResponseEntity.ok(new AuthResponse("Refresh token implementado", true));
+        try {
+            String refreshToken = token.replace("Bearer ", "");
+            AuthResponse response = authenticationService.refreshToken(refreshToken);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new AuthResponse("Token inválido", false));
+        }
     }
     
     @PostMapping("/logout")
-    public ResponseEntity<AuthResponse> logout() {
-        // TODO: Implementar logout (invalidar token)
-        return ResponseEntity.ok(new AuthResponse("Logout exitoso", true));
+    public ResponseEntity<AuthResponse> logout(@RequestHeader("Authorization") String token) {
+        try {
+            String jwt = token.replace("Bearer ", "");
+            authenticationService.logout(jwt);
+            return ResponseEntity.ok(new AuthResponse("Logout exitoso", true));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new AuthResponse("Error en logout", false));
+        }
     }
 } 
