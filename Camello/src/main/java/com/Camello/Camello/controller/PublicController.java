@@ -25,6 +25,11 @@ public class PublicController {
     private final CategoryService categoryService;
     private final ServiceService serviceService;
     
+    @GetMapping("/health")
+    public ResponseEntity<String> health() {
+        return ResponseEntity.ok("Backend is running!");
+    }
+    
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.ok(categoryService.getAllActiveCategories());

@@ -29,7 +29,7 @@ public class User implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
     
-    @Column(name = "password_hash", nullable = false)
+    @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
     
     @Enumerated(EnumType.STRING)

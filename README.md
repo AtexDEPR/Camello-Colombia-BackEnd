@@ -45,6 +45,96 @@ src/main/java/com/Camello/Camello/
 └── service/         # Lógica de negocio
 ```
 
+## 👥 Usuarios de Prueba
+
+### Scripts Disponibles
+
+El proyecto incluye scripts SQL para crear usuarios de prueba con datos realistas:
+
+#### 1. Script Completo (`scripts/insert_test_users.sql`)
+Crea un conjunto completo de usuarios con perfiles detallados:
+
+**🔑 Contraseña para todos los usuarios:** `password123`
+
+#### Administradores (4 usuarios)
+- `admin@camello.co` - Administrador principal
+- `admin.sistema@camello.co` - Administrador del sistema
+- `soporte@camello.co` - Soporte técnico
+- `moderador@camello.co` - Moderador de contenido
+
+#### Freelancers (8 usuarios)
+| Email | Nombre | Especialidad | Ubicación | Tarifa/Hora |
+|-------|--------|--------------|-----------|-------------|
+| `maria.rodriguez@gmail.com` | María Rodríguez | Diseñadora Gráfica Senior | Bogotá | $45,000 |
+| `carlos.martinez@hotmail.com` | Carlos Martínez | Desarrollador Full Stack | Medellín | $65,000 |
+| `ana.garcia@yahoo.com` | Ana García | Community Manager | Cali | $35,000 |
+| `luis.hernandez@gmail.com` | Luis Hernández | Desarrollador Mobile | Barranquilla | $70,000 |
+| `sofia.lopez@outlook.com` | Sofía López | UX/UI Designer | Bucaramanga | $55,000 |
+| `diego.morales@gmail.com` | Diego Morales | Editor de Video | Pereira | $50,000 |
+| `valentina.castro@gmail.com` | Valentina Castro | Content Writer | Manizales | $30,000 |
+| `andres.silva@hotmail.com` | Andrés Silva | Fotógrafo | Cartagena | $40,000 |
+
+#### Contratantes (5 empresas)
+| Email | Empresa | Contacto | Industria | Ubicación |
+|-------|---------|----------|-----------|-----------|
+| `contacto@innovatech.co` | InnovaTech Solutions | Roberto Pérez | Tecnología | Bogotá |
+| `rrhh@digitalcolombia.com` | Digital Colombia | Patricia Gómez | Marketing Digital | Medellín |
+| `proyectos@startupbogota.co` | Startup Bogotá | Alejandro Vargas | Startups | Bogotá |
+| `marketing@ecommercecol.com` | E-commerce Colombia | Camila Ruiz | E-commerce | Cali |
+| `desarrollo@agenciacreativa.co` | Agencia Creativa | Fernando Torres | Publicidad | Barranquilla |
+
+#### 2. Script Rápido (`scripts/quick_test_users.sql`)
+Para pruebas básicas rápidas:
+- `freelancer@test.com` - Freelancer básico
+- `contractor@test.com` - Contratante básico
+- `admin@test.com` - Admin adicional
+
+### Datos Incluidos
+
+El script completo también crea:
+- ✅ **Servicios activos** de los freelancers
+- ✅ **Ofertas de trabajo** de las empresas
+- ✅ **Ratings y reseñas** simuladas
+- ✅ **Categorías** de servicios (Diseño, Desarrollo, Marketing, etc.)
+- ✅ **Habilidades técnicas** por especialidad
+- ✅ **Ubicaciones colombianas** realistas
+
+### Cómo Usar los Scripts
+
+1. **Ejecutar script principal** (si no se ha hecho):
+```bash
+# En la consola de PostgreSQL o Neon
+\i scripts/neon_setup.sql
+```
+
+2. **Ejecutar script de usuarios**:
+```bash
+# Para usuarios completos con datos realistas
+\i scripts/insert_test_users.sql
+
+# O para usuarios básicos de prueba
+\i scripts/quick_test_users.sql
+```
+
+### Ejemplos de Login
+
+```bash
+# Freelancer
+curl -X POST http://localhost:8081/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"maria.rodriguez@gmail.com","password":"password123"}'
+
+# Contratante
+curl -X POST http://localhost:8081/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"contacto@innovatech.co","password":"password123"}'
+
+# Admin
+curl -X POST http://localhost:8081/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@camello.co","password":"password123"}'
+```
+
 ## 🔧 Configuración
 
 ### Variables de Entorno
@@ -66,6 +156,14 @@ app.cors.allowed-origins=http://localhost:3000,http://localhost:5173
 
 ### Base de Datos
 
+#### Para Neon (Recomendado)
+```bash
+# Ejecutar en la consola de Neon
+\i scripts/neon_setup.sql
+\i scripts/insert_test_users.sql
+```
+
+#### Para PostgreSQL Local
 1. Crear base de datos PostgreSQL:
 ```sql
 CREATE DATABASE camello_db;
@@ -80,6 +178,9 @@ scripts/02_create_indexes.sql
 scripts/03_create_triggers.sql
 scripts/04_seed_categories.sql
 scripts/05_seed_admin_user.sql
+scripts/06_seed_test_data.sql
+# Opcional: usuarios de prueba
+scripts/insert_test_users.sql
 ```
 
 ## 🚀 Instalación y Ejecución

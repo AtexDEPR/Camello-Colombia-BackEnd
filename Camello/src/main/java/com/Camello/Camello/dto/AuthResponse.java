@@ -14,18 +14,16 @@ public class AuthResponse {
     
     private String token;
     private String refreshToken;
-    private UUID userId;
-    private String email;
-    private User.UserRole role;
+    private User user;
+    private long expiresIn;
     private String message;
     private boolean success;
     
     public AuthResponse(String token, String refreshToken, User user) {
         this.token = token;
         this.refreshToken = refreshToken;
-        this.userId = user.getId();
-        this.email = user.getEmail();
-        this.role = user.getRole();
+        this.user = user;
+        this.expiresIn = 86400000; // 24 horas en milisegundos
         this.success = true;
         this.message = "Autenticación exitosa";
     }
@@ -33,5 +31,9 @@ public class AuthResponse {
     public AuthResponse(String message, boolean success) {
         this.message = message;
         this.success = success;
+        this.token = null;
+        this.refreshToken = null;
+        this.user = null;
+        this.expiresIn = 0;
     }
 } 
